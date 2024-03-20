@@ -21,3 +21,6 @@ pip3 install -r requirements.txt
 OPENAI_API_KEY=token python3 main.py
 
 For exiting venv - ```deactivate```
+
+# Add dependencies
+```pip3 freeze > requirements.txt```
