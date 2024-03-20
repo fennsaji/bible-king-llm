@@ -1,7 +1,8 @@
 import os
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
-from langchain_core.output_parsers import StrOutputParser
+from fastapi import FastAPI
+from langserve import add_routes
 
 
 my_prompt = ChatPromptTemplate.from_messages([
@@ -11,14 +12,13 @@ my_prompt = ChatPromptTemplate.from_messages([
 
 llm = ChatOpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"))
 
-output_parser = StrOutputParser()
+chain = my_prompt | llm
 
-chain = my_prompt | llm | output_parser
+app = FastAPI(title="Fitness Trainer")
 
-user_input = input("Ask me a question related to your fitness goals.\n")
-response = chain.invoke({
-  "input": user_input
-})
+add_routes(app, chain)
 
+if __name__ == "__main__":
+    import uvicorn
 
-print(response)
+    uvicorn.run(app, host="localhost", port=8000)
